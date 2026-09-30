@@ -7,7 +7,7 @@ import { BEST_DAY } from './bestday.ts';
  *
  * 关键设计：**动画期间不触发 React 重渲染。**
  *
- * 74 张曲线卡片以 60fps 更新；若用 setState 驱动，每帧要 diff 74 棵 SVG 子树，
+ * 79 张曲线卡片以 60fps 更新；若用 setState 驱动，每帧要 diff 79 棵 SVG 子树，
  * 必然卡死。所以这里把「天数」放在一个可变的模块级对象里，由一个 rAF 循环推进，
  * 再通过一组命令式订阅者把新值直接写进 DOM —— 与原单文件里的 render() 做法一致。
  *

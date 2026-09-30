@@ -12,7 +12,7 @@ import { subscribe, poke } from '../model/clock.ts';
  * 表格视图 —— 无障碍等价物。
  *
  * 「当前数值」列随时钟变化。但不逐帧刷新：长周期曲线的读数几十秒才变一次，
- * 逐帧重写 74 个单元格纯属浪费，所以按整体签名（每条当前高度的粗量化）变化才刷。
+ * 逐帧重写 79 个单元格纯属浪费，所以按整体签名（每条当前高度的粗量化）变化才刷。
  */
 export function TableView({ ind, levels }: {
   ind: IndustryId | 'all';

@@ -7,7 +7,7 @@
  */
 
 export type IndustryId =
-  | 'life' | 'agri' | 'space' | 'marine' | 'health' | 'energy' | 'transport'
+  | 'life' | 'agri' | 'plant' | 'space' | 'marine' | 'health' | 'energy' | 'transport'
   | 'finance' | 'mfg' | 'edu' | 'tourism' | 'sports' | 'media';
 
 export interface Industry {
@@ -19,6 +19,7 @@ export interface Industry {
 export const INDUSTRIES: Industry[] = [
   { id: 'life', name: '生活日常', desc: '原来那组：昼夜节律、月亮、太阳与历法' },
   { id: 'agri', name: '农业', desc: '作物与牲畜的生理节律、节气与生长季' },
+  { id: 'plant', name: '植物科类', desc: '植物的光合、开花落叶、物候与年轮' },
   { id: 'space', name: '太空航天', desc: '火箭结构、发动机时序、在轨轨道与空间天气' },
   { id: 'marine', name: '海洋渔业', desc: '潮汐、渔汛与海洋生产力的季节性' },
   { id: 'health', name: '医疗健康', desc: '从心跳呼吸到给药与流行病周期' },

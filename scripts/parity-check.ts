@@ -21,29 +21,29 @@ const fail: string[] = [];
 const ok = (cond: boolean, msg: string) => { if (!cond) fail.push(msg); };
 
 /* ---------- 条数与结构 ---------- */
-ok(SER.length === 74, `SERIES 条数 ${SER.length} != 74`);
-ok(SERIES.length === 74, `SERIES 原始数组 ${SERIES.length} != 74`);
-ok(Object.keys(YAX).length === 73, `YAX 唯一键数 ${Object.keys(YAX).length} != 73（月经周期重名，两条共用一个键）`);
+ok(SER.length === 79, `SERIES 条数 ${SER.length} != 79`);
+ok(SERIES.length === 79, `SERIES 原始数组 ${SERIES.length} != 79`);
+ok(Object.keys(YAX).length === 78, `YAX 唯一键数 ${Object.keys(YAX).length} != 78（月经周期重名，两条共用一个键）`);
 ok(LEVELS.length === 5, `LEVELS ${LEVELS.length} != 5`);
-ok(INDUSTRIES.length === 13, `INDUSTRIES ${INDUSTRIES.length} != 13`);
-ok(Object.keys(PU).length === 27, `PU 条目 ${Object.keys(PU).length} != 27`);
+ok(INDUSTRIES.length === 14, `INDUSTRIES ${INDUSTRIES.length} != 14`);
+ok(Object.keys(PU).length === 30, `PU 条目 ${Object.keys(PU).length} != 30`);
 
-/* ---------- 尺度分布（与原文件一致） ---------- */
+/* ---------- 尺度分布（74 条基线 + 植物科类新增 5 条） ---------- */
 const dist: Record<string, number> = {};
 SER.forEach((s) => { dist[s.lv] = (dist[s.lv] || 0) + 1; });
-const wantDist: Record<string, number> = { day: 27, week: 7, month: 14, season: 18, year: 8 };
+const wantDist: Record<string, number> = { day: 29, week: 7, month: 14, season: 20, year: 9 };
 for (const k in wantDist) ok(dist[k] === wantDist[k], `尺度 ${k}: ${dist[k]} != ${wantDist[k]}`);
 
 /* ---------- 行业分布：19 条生活曲线原文无 ind 字段，须兜底为 life ---------- */
 const byInd: Record<string, number> = {};
 SER.forEach((s) => { byInd[s.ind!] = (byInd[s.ind!] || 0) + 1; });
 const wantInd: Record<string, number> = {
-  life: 19, agri: 5, space: 15, marine: 4, health: 4, energy: 3, transport: 4,
+  life: 19, agri: 5, plant: 5, space: 15, marine: 4, health: 4, energy: 3, transport: 4,
   finance: 4, mfg: 4, edu: 3, tourism: 3, sports: 3, media: 3,
 };
 for (const k in wantInd) ok(byInd[k] === wantInd[k], `行业 ${k}: ${byInd[k]} != ${wantInd[k]}`);
 const indSum = INDUSTRIES.reduce((a, x) => a + (byInd[x.id] || 0), 0);
-ok(indSum === 74, `各行业条数之和 ${indSum} != 74`);
+ok(indSum === 79, `各行业条数之和 ${indSum} != 79`);
 
 /* ---------- 形状：不允许水平线（早先 smoothPulse 的 mod 传错就踩过这个坑） ---------- */
 const flat: string[] = [];
@@ -79,6 +79,13 @@ ok(badPhase.length === 0, `相位非有限: ${badPhase.slice(0, 8).join(', ')}`)
 const s0 = SER[0];
 ok(phaseOf(s0, 0, { ind: 'life' }) !== null, '生活曲线在 life 行业下应非 null');
 ok(phaseOf(s0, 0, { ind: 'space' }) === null, '生活曲线在 space 行业下应为 null');
+
+/* ---------- 相位来源：植物科类新增的非日尺度曲线必须在 PU 里登记 ----------
+   漏登记的曲线不会报错，而是静默取 0 相位的「兜底值」（phaseOf 的 `: 0`），
+   表现为这条曲线永远不动。原有 20 条曲线本来就是这么落兜底的（原版行为，不动），
+   这里只冻结新增的植物曲线，保证新加的一条不踩这个坑。 */
+const noPU = SER.filter((s) => s.ind === 'plant' && s.lv !== 'day' && !PU[s.name]).map((s) => s.name);
+ok(noPU.length === 0, `植物科类非日尺度曲线缺 PU 登记: ${noPU.join(', ')}`);
 
 /* ---------- 起点：修复 PU 周期覆盖后应落在 192（近满月 + 近夏至 + 周六） ---------- */
 ok(BEST_DAY === 192, `BEST_DAY ${BEST_DAY} != 192`);

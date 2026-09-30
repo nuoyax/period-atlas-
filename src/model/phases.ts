@@ -25,6 +25,12 @@ export const PU: Record<string, { at: (d: number) => number; period: number }> =
   '工作日作息': { at: (d) => ASTRO.work + d, period: 7 },
   '历年长度': { at: (d) => d, period: 4 },
 
+  // 植物科类：物候与落叶挂在太阳年上（由积温/日照长度触发），锚点与其它季节曲线同源；
+  // 竹类开花是一次性事件，锚点取「2020 为开花年、约 60 年一放」。
+  '物候期': { at: (d) => ASTRO.season + d, period: TROPICAL },
+  '落叶': { at: (d) => ASTRO.season + d, period: TROPICAL },
+  '竹类开花周期': { at: (d) => d, period: 60 },
+
   // 新增长周期曲线：锚点仍取「days = 0 时各周期所处的相位」
   '太阳自转': { at: (d) => ASTRO.sunrot + d, period: 27.275 },
   '太阳活动周': { at: (d) => ASTRO.cycle + d, period: 11 },

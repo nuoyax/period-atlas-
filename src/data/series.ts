@@ -240,6 +240,59 @@ export const SERIES: SeriesDef[] = [
       sub:"作物需要累积到一定积温才进入下一生育期，所以<b>物候期逐年整体前后挪几天</b>，但不会越界。",
       example:"暖冬会让花期提前，赶上倒春寒就减产——果农盯的正是这条曲线的上下摆。" },
 
+    /* ================= 植物科类 ================= */
+    { ind:"plant", lv:"day", name:"气孔开闭", span:24, period:"24 小时", chip:"T = 24 小时",
+      ticksU:[0,.25,.5,.75,1], tickLabel:(u)=> fmt(u*24),
+      windows:[{c:9.5, h:3.5}],               /* 晨间开启主峰，正午略收 */
+      peaks:[{u:9.5/24, l:"上午 09:30 最强"}],
+      range:"清晨开启 / 正午略关 / 夜间闭合",
+      sub:"气孔在<b>清晨张开、上午最旺</b>，正午前后为了保水会短暂收一收，天黑后整夜闭合——光合就排在这条曲线上。",
+      example:"大棚里正午闷热时叶片“蒸不动”，正是气孔关了门；补光、通风、喷雾都要绕开这个低谷。" },
+
+    { ind:"plant", lv:"day", name:"睡眠运动", span:24, period:"24 小时", chip:"T = 24 小时",
+      ticksU:[0,.25,.5,.75,1], tickLabel:(u)=> fmt(u*24),
+      windows:[{c:12.0, h:8.0}],              /* 白昼张开，夜间合拢 */
+      peaks:[{u:12/24, l:"白天张开"},{u:0, l:"夜间闭合", below:true}],
+      range:"白天张开 / 夜间合拢",
+      sub:"含羞草、酢浆草、合欢的叶片白天展开、<b>夜里合拢下垂</b>，是植物自己的昼夜节律，不靠光照临时决定。",
+      example:"豆科植物的“睡眠运动”在恒定光照下照样持续——和人的生物钟一样，是内生的。" },
+
+    { ind:"plant", lv:"season", name:"物候期", span:365.2422, period:"365.24 天", chip:"T = 365.24 天",
+      ticksU:[0,.25,.5,.75,1], tickLabel:(u)=> monthName((Math.round(u*12) % 12) + 1),
+      shape:(u)=> {
+        const m = wrap(u,1) * 12;
+        const canopy = 0.5 + 0.5 * Math.sin(2*Math.PI*(m - 4.2)/12);   /* 盛夏叶量最大 */
+        const flush  = 0.16 * smoothPulse(u, 0.28, 0.08, 0.06);        /* 春季萌芽抽叶 */
+        return Math.max(0.06, Math.min(1, 0.16 + 0.72 * canopy + flush));
+      },
+      peaks:[{u:7.2/12, l:"盛夏叶量最大"},{u:0.03, l:"冬季落叶谷", below:true}],
+      range:"春季萌芽 / 夏季郁闭 / 秋冬落叶",
+      sub:"萌芽、展叶、开花、结果、落叶依次排在一个<b>回归年</b>里，就是物候期；它由积温与日照长度共同触发。",
+      example:"同一树种的开花期每年前后差几天到两周，物候观测记录正是用来追这个偏移的。" },
+
+    { ind:"plant", lv:"season", name:"落叶", span:365.2422, period:"365.24 天", chip:"T = 365.24 天",
+      ticksU:[0,.25,.5,.75,1], tickLabel:(u)=> monthName((Math.round(u*12) % 12) + 1),
+      shape:(u)=> {
+        const uu = wrap(u,1);
+        return Math.max(0.05, Math.min(1, 0.16 + 0.84 * smoothPulse(uu, 0.84, 0.11, 0.07)));
+      },
+      peaks:[{u:0.84, l:"10–11 月落叶峰"},{u:0.3, l:"春季新叶期最低", below:true}],
+      range:"10–11 月集中落叶",
+      sub:"落叶集中在<b>10–11 月</b>：日照变短、气温下降触发离层，叶片整片脱落，随纬度前后挪。",
+      example:"同一条街的行道树，北边几棵先秃、南边晚一周——落叶峰本身就是一张温度地图。" },
+
+    { ind:"plant", lv:"year", name:"竹类开花周期", span:60, period:"约 60 年", chip:"T ≈ 60 年",
+      ticksU:[0,.25,.5,.75,1],
+      tickLabel:(u)=> (2020 + Math.round(u*60)) + " 年",
+      shape:(u)=> {
+        const uu = wrap(u,1);
+        return (uu > 0.97 || uu < 0.03) ? 1 : 0.12;
+      },
+      peaks:[{u:0, l:"开花年"}],
+      range:"约 60 年一放（一次性开花后枯死）",
+      sub:"许多竹种是<b>一次性开花</b>：同一片竹林几十年同步开一次，开花结实后整片枯死，周期可长达数十年。",
+      example:"上世纪八十年代川陕一带的箭竹大面积开花枯死，直接冲击了以竹为食的大熊猫口粮。" },
+
     /* ================= 太空航天 ================= */
     { ind:"space",  lv:"day", name:"在轨轨道", span:24, period:"约 92 分钟", chip:"T = 92 分钟",
       ticksU:[0,.25,.5,.75,1], tickLabel:(u)=> "第 " + Math.round(u*24) + " 小时",

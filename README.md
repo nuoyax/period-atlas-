@@ -28,8 +28,8 @@ built page must be served over HTTP. Opening `dist/index.html` from disk shows a
 
 ## Using it
 
-- **Industry dropdown** — 13 industries: Everyday Life, Agriculture, Space & Aerospace,
-  Ocean & Fisheries, Health & Medicine, Energy & Power, Transport & Logistics,
+- **Industry dropdown** — 14 industries: Everyday Life, Agriculture, Plant Biology,
+  Space & Aerospace, Ocean & Fisheries, Health & Medicine, Energy & Power, Transport & Logistics,
   Finance & Retail, Manufacturing, Education, Tourism, Sports & Venues, Media & Content.
   Pick one and only that one shows; "All industries" puts everything on screen together.
 - **Time-scale buttons** — five layers: one day (24 h), one week (7 d), one month (28–31 d),
@@ -69,7 +69,7 @@ index) are honestly labelled 指数 — "index".
 
 ## Why colour is a ramp, not a categorical palette
 
-13 industries and dozens of curves far exceed what one categorical palette's 8 slots can
+14 industries and dozens of curves far exceed what one categorical palette's 8 slots can
 carry — forcing a 9th hue produces a colour indistinguishable from an existing one under
 colour-vision deficiency. So:
 
@@ -105,7 +105,7 @@ dragged along by the 3D one.
 ```
 src/
 ├─ main.tsx / App.tsx        top-level structure, view switching
-├─ data/                     series.ts (74 series) · yax.ts · phases.ts · levels.ts · industries.ts · astro.ts
+├─ data/                     series.ts (79 series) · yax.ts · phases.ts · levels.ts · industries.ts · astro.ts
 ├─ model/                    math · shape · rhythm · axis · readout · bestday · clock · theme
 ├─ components/               Controls · BandBar · WaveView · WaveCard · RingView · TableView · FootNote
 │  └─ orbit/                 OrbitView · scene.ts · bodies.ts · textures.ts · rates.ts · MiniOrbit · BodyPreview
@@ -113,15 +113,15 @@ src/
 ```
 
 One design decision carries the whole thing: **React owns structure, imperative DOM owns
-60 fps.** 74 SVG cards are driven at 60 fps from a single module-level clock and one rAF loop;
+60 fps.** 79 SVG cards are driven at 60 fps from a single module-level clock and one rAF loop;
 subscribers write `setAttribute` / `textContent` directly. `useState` holds only *structural*
 change (industry, visible levels, view, table, playing, speed), and each card is `memo`'d so
-it never re-renders during animation. Driving that through `setState` would diff 74 subtrees
+it never re-renders during animation. Driving that through `setState` would diff 79 subtrees
 every frame.
 
 ## Data source
 
-`src/data/series.ts` holds 74 series (scale, period, active window, peak, shape function) and
+`src/data/series.ts` holds 79 series (scale, period, active window, peak, shape function) and
 `src/data/yax.ts` the matching axis table. Change a series in one place and the axes, legend,
 table, hover and phase ring all follow. `npm run check:data` verifies counts, scale
 distribution, industry distribution, that no series falls back to a default axis, and that a
