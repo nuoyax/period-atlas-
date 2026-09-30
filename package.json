@@ -1,0 +1,28 @@
+{
+  "name": "period-atlas",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "description": "生活里的周期 —— 周期现象动画图谱，含太阳系 3D 公转模拟",
+  "author": "2862440280@qq.com",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc -b && vite build",
+    "preview": "vite preview",
+    "typecheck": "tsc -b --noEmit",
+    "check:data": "node --experimental-strip-types --disable-warning=ExperimentalWarning scripts/parity-check.ts"
+  },
+  "dependencies": {
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "three": "^0.180.0"
+  },
+  "devDependencies": {
+    "@types/react": "^18.3.12",
+    "@types/react-dom": "^18.3.1",
+    "@types/three": "^0.180.0",
+    "@vitejs/plugin-react": "^4.3.4",
+    "typescript": "^5.6.3",
+    "vite": "^5.4.11"
+  }
+}
