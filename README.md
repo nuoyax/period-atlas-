@@ -1,61 +1,144 @@
-# 生活里的周期 · 周期现象动画图谱
+# Period Atlas · Cycles Around Us
 
-把生活中各种**周期性现象**画成一组会动的曲线：从一天里的褪黑素、体温、通勤高峰，到一月里的月相与潮汐，再到一年里的太阳高度角、农事节气、赛场赛季，一直走到数年的闰年与太阳活动周。
+[中文](README.zh-CN.md) · **English**
 
-一个文件，零依赖、零构建，双击就能看。
+A set of *animated curves* for the periodic phenomena in ordinary life — from melatonin,
+body temperature and the commute peak inside one day, through moon phases and tides inside
+one month, to solar elevation, farming seasons and league seasons inside one year, and on to
+leap years and the solar cycle across several years.
 
-## 打开
+Plus a **3D solar-system view**: eight planets orbiting the Sun on their real sidereal
+periods, with a per-body preview panel.
 
-直接用浏览器打开 `period-atlas.html`（建议 Chrome / Edge）。没有安装步骤、没有网络请求、没有外部资源，整页就是这一个 HTML。
+Built with React 18 + TypeScript + Vite 5 + three.js. No external assets, no CDN, no network
+requests at runtime.
 
-## 怎么用
+## Run it
 
-- **行业下拉框**：13 个行业，选谁只看谁——生活日常 / 农业 / 太空航天 / 海洋渔业 / 医疗健康 / 能源电力 / 交通物流 / 金融零售 / 制造业 / 教育 / 旅游 / 体育建筑 / 传媒内容。选「全部行业」则全部同屏。
-- **尺度按钮**：时间尺度分五层——一天（24 小时）、一周（7 天）、一月（28–31 天）、一年（365.25 天）、数年（4 年）。开关哪一层，只影响可见性。
-- 两级筛选互不干扰；被隐藏的曲线时间冻结，重新显示时不会「跳过」那段时间。
-- **播放 / 暂停**：一个时钟推进，红点跟着走完每条周期的一整个轮回。
-- **速度**：慢 / 常速 / 快（一天对应 48 / 16 / 8 秒）。
-- **时刻滑块**：手动拖到任意钟点，作用于 24 小时这一层。
-- **波形 / 相位轮**：相位轮把「一天」这一层的所有曲线叠在同一个 24 小时圆盘上，同一钟点落在同一条半径。
-- **表格视图**：全部现象的无障碍等价表格（尺度、周期、活跃窗口、峰值时刻、当前数值、生活里的例子）。
-- **深色模式**：右上角切换。深色不是自动反色，而是从同一族色阶里**另选**一组经过校验的色。
+```bash
+npm install
+npm run dev        # dev server
+npm run build      # tsc -b && vite build → multi-file dist/
+npm run preview    # serve dist/ over HTTP (do NOT open dist/index.html via file://)
+npm run check:data # data-layer parity/invariant checks
+```
 
-## 每张图一条自己的纵轴
+`npm run build` emits a standard multi-file `dist/` — assets are absolutely pathed, so the
+built page must be served over HTTP. Opening `dist/index.html` from disk shows a blank page.
 
-曲线形状统一画在 0–1 的相对高度上，但**显示时按各自真实的物理量与量程换算**：
+## Using it
 
-| 现象 | 纵轴 |
+- **Industry dropdown** — 13 industries: Everyday Life, Agriculture, Space & Aerospace,
+  Ocean & Fisheries, Health & Medicine, Energy & Power, Transport & Logistics,
+  Finance & Retail, Manufacturing, Education, Tourism, Sports & Venues, Media & Content.
+  Pick one and only that one shows; "All industries" puts everything on screen together.
+- **Time-scale buttons** — five layers: one day (24 h), one week (7 d), one month (28–31 d),
+  one year (365.25 d), several years (4 y). Toggling a layer only affects visibility.
+- The two filters are independent. A hidden curve's clock is *frozen* — showing it again
+  does not make it "skip" the time it was away.
+- **Play / pause**, **speed** (slow / normal / fast: one day per 48 / 16 / 8 s), and a
+  **scrubber** for the 24-hour layer.
+- **Wave / Phase-ring** — the ring overlays every series from the one-day layer onto a single
+  24-hour dial, so one clock time lands on one radius.
+- **Solar system (3D)** — drag to orbit, scroll to zoom, click a planet (or its chip) to
+  focus it, choose a time rate (1 day … 10 years per second), and read a body's real
+  parameters in the preview panel.
+- **Table view** — an accessible equivalent table of every series (scale, period, active
+  window, peak, current value, everyday example).
+- **Dark mode** — top right. Dark is not an automatic inversion; it is a *separately chosen*
+  set of validated steps from the same ramps.
+
+## Every chart carries its own y-axis
+
+Curve shapes are normalized to a 0–1 height internally, but **displayed in each series' own
+real physical unit and range**:
+
+| Series | y-axis |
 |---|---|
-| 月相 | 月面照亮比例 % |
-| 潮汐 | 潮位 m |
-| 血压晨峰 | 收缩压 mmHg |
-| 核心体温 | ℃ |
-| 火箭发动机点火 | 推力 % 额定 |
-| 贮箱加注 / 液氧蒸发 | 贮箱液位 % |
+| Moon phase | illuminated fraction, % |
+| Tide | sea level, m |
+| Morning blood-pressure surge | systolic, mmHg |
+| Core body temperature | °C |
+| Rocket-engine ignition | thrust, % of rated |
+| Tank fill / LOX boil-off | tank level, % |
 
-所以这是一组**小图**：横轴各画各的周期，纵轴各用各的量纲，**只能纵向读单张图的峰谷，不能横向比两张图的高低**。本身没有单一物理量的（通勤高峰、收视指数等），就如实标成「指数」。
+So this is a **grid of small multiples**: each x-axis spans its own period, each y-axis uses
+its own dimension — read a single chart's peaks and troughs vertically, but **do not compare
+heights across two charts**. Series with no single physical quantity (commute peak, ratings
+index) are honestly labelled 指数 — "index".
 
-## 颜色为什么是色阶而不是分类色
+## Why colour is a ramp, not a categorical palette
 
-13 个行业、数十条曲线，远超一张分类色板 8 个槽的能力上限——硬塞第 9 个色会在色觉缺陷下与已有色无法区分。所以：
+13 industries and dozens of curves far exceed what one categorical palette's 8 slots can
+carry — forcing a 9th hue produces a colour indistinguishable from an existing one under
+colour-vision deficiency. So:
 
-- **颜色表示时间尺度**（序数色阶）：同一族蓝色由浅到深，五个层级各一档，另配全称与区间文字，识别不靠颜色单独承担。
-- **颜色跟着实体走，不跟筛选走**：切换行业不会给幸存曲线重新上色，只是显隐。
-- 分类色板 7 槽、序数色阶 5 档，亮/暗两种模式均通过 `validate_palette.js` 的对比度、色度下限、色觉缺陷相邻色距与正常视觉色距检查（结果由脚本判定，非肉眼估计）。
+- **Colour encodes the time scale** — an ordinal blue ramp, light to dark, one step per
+  layer, each with its own full name and span text. Identity is never carried by colour alone.
+- **Colour follows the entity, not the filter** — switching industry never repaints the
+  survivors, only shows or hides them.
+- 7 categorical slots and 5 ordinal steps, in both light and dark mode, pass
+  `validate_palette.js` on contrast, chroma floor, CVD adjacent-pair separation and
+  normal-vision separation (judged by the script, not by eye).
 
-## 文件
+## Scale honesty in the 3D view
+
+Real proportions are not viewable — Neptune is 30 AU (4.5 billion km) out while Earth is
+6,371 km in radius, four orders of magnitude apart. The scene therefore **compresses
+distance by √ and size by the 0.4 power**, and says so on the page:
+
+> 距离按平方根、大小按 0.4 次幂压缩显示，非真实比例
+
+Sizes and orbital semi-major axes shown in the preview panel are the *real* values; only the
+on-screen geometry is compressed. Planet positions use real sidereal periods and J2000 mean
+longitudes, documented as **mean** longitudes — eccentricity and perturbations are not
+modelled. The renderer keeps `PointLight.decay = 0`, because under three r155+ physically
+correct lighting Neptune would otherwise receive ~1/900 of Earth's light and render as a
+black ball.
+
+The 3D view keeps **its own day counter**, seeded from the 2D clock but advanced at its own
+rate; the only hand-off is the one-way "sync back to 2D" button, so the 2D timeline is never
+dragged along by the 3D one.
+
+## Architecture
 
 ```
-period-atlas.html   全部内容：结构、样式、数据、绘制、交互
-README.md           本文件
+src/
+├─ main.tsx / App.tsx        top-level structure, view switching
+├─ data/                     series.ts (74 series) · yax.ts · phases.ts · levels.ts · industries.ts · astro.ts
+├─ model/                    math · shape · rhythm · axis · readout · bestday · clock · theme
+├─ components/               Controls · BandBar · WaveView · WaveCard · RingView · TableView · FootNote
+│  └─ orbit/                 OrbitView · scene.ts · bodies.ts · textures.ts · rates.ts · MiniOrbit · BodyPreview
+└─ styles/tokens.css
 ```
 
-`period-atlas.html` 内部只有一处数据源：`SERIES` 数组（每条现象的尺度、周期、活跃窗口、峰值、形状函数）与配套的 `YAX` 量程表。改数据只需改这两处，其余（轴、图例、表格、悬停、相位轮）自动跟随。
+One design decision carries the whole thing: **React owns structure, imperative DOM owns
+60 fps.** 74 SVG cards are driven at 60 fps from a single module-level clock and one rAF loop;
+subscribers write `setAttribute` / `textContent` directly. `useState` holds only *structural*
+change (industry, visible levels, view, table, playing, speed), and each card is `memo`'d so
+it never re-renders during animation. Driving that through `setState` would diff 74 subtrees
+every frame.
 
-## 免责
+## Data source
 
-活跃窗口与峰值为**人群层面的常见区间**，用于示意节律形状，不构成医学建议。
+`src/data/series.ts` holds 74 series (scale, period, active window, peak, shape function) and
+`src/data/yax.ts` the matching axis table. Change a series in one place and the axes, legend,
+table, hover and phase ring all follow. `npm run check:data` verifies counts, scale
+distribution, industry distribution, that no series falls back to a default axis, and that a
+filtered-out series' phase lookup returns `null`.
 
-## 作者
+## Note on the directory name
+
+The repository directory is still `cycle-animation` while `package.json`'s `name` is
+`period-atlas` — the mismatch is a leftover: the rename was attempted while the working
+directory was locked on it, and `mv` reported "file is in use". **It affects nothing at
+runtime**; build, preview and checks are all independent of the directory name.
+
+## Disclaimer
+
+Active windows and peaks are **population-level common ranges**, meant to illustrate rhythm
+shapes. They are not medical advice.
+
+## Author
 
 2862440280@qq.com
