@@ -1,6 +1,10 @@
   *{box-sizing:border-box}
+  /* 注：原单文件里有两处用了 var(--surface-2) 却从未定义它（.sub-head b 与 .ind-empty），
+     那两个背景当时解析为空。这里补上，取值与 --surface-1 / --page 同一族，
+     并保留这一行说明，免得后来者以为是凭空多的 token。 */
   :root{
     color-scheme: light;
+    --surface-2:#f4f4f1;
     --surface-1:#fcfcfb;
     --page:#f9f9f7;
     --ink:#0b0b0b;
@@ -21,7 +25,7 @@
   @media (prefers-color-scheme: dark){
     :root:where(:not([data-theme="light"])){
       color-scheme: dark;
-      --surface-1:#1a1a19; --page:#0d0d0d; --ink:#ffffff; --ink-2:#c3c2b7;
+      --surface-1:#1a1a19; --surface-2:#232322; --page:#0d0d0d; --ink:#ffffff; --ink-2:#c3c2b7;
       --muted:#898781; --grid:#2c2c2a; --axis:#383835; --border:rgba(255,255,255,.10);
       --s1:#3987e5; --s2:#d95926; --s3:#199e70; --s4:#c98500; --s5:#d55181;
       --s6:#008300; --s7:#9085e9;
@@ -33,7 +37,7 @@
   }
   :root[data-theme="dark"]{
     color-scheme: dark;
-    --surface-1:#1a1a19; --page:#0d0d0d; --ink:#ffffff; --ink-2:#c3c2b7;
+    --surface-1:#1a1a19; --surface-2:#232322; --page:#0d0d0d; --ink:#ffffff; --ink-2:#c3c2b7;
     --muted:#898781; --grid:#2c2c2a; --axis:#383835; --border:rgba(255,255,255,.10);
     --s1:#3987e5; --s2:#d95926; --s3:#199e70; --s4:#c98500; --s5:#d55181;
     --s6:#008300; --s7:#9085e9;
@@ -236,9 +240,12 @@
   .tip .row .n{color:var(--ink-2)}
 
   /* ---------- ring view ---------- */
-  .ring-card{display:none}
+  /* 原版用 .ring-card{display:none} 由脚本切显隐；React 里只在 view==='ring' 时渲染，故不需要 */
   .ring-grid{display:flex;gap:28px;flex-wrap:wrap;align-items:center;justify-content:center}
   svg.ring{display:block;width:100%;max-width:400px;height:auto}
+  .ring-tick{font:400 11px system-ui,sans-serif;fill:var(--muted);font-variant-numeric:tabular-nums}
+  .ring-clock{font:650 26px system-ui,sans-serif;fill:var(--ink);font-variant-numeric:tabular-nums}
+  .ring-sub{font:400 11px system-ui,sans-serif;fill:var(--muted)}
   .ring-legend{list-style:none;margin:0;padding:0;min-width:250px;flex:1 1 250px}
   .ring-legend li{
     display:flex;align-items:center;gap:10px;
