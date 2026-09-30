@@ -50,7 +50,7 @@ export interface SolarScene {
 interface Entry {
   def: BodyDef;
   pivot: THREE.Group;     // 在轨道面上的定位组（承担轨道倾角）
-  spin: THREE.Object3D;   // 承担自转
+  spinner: THREE.Object3D;    // 承担自转（其父级承担自转轴倾角）
   mesh: THREE.Mesh;
   orbit: THREE.LineLoop;
 }
@@ -152,13 +152,21 @@ export function createSolarScene(canvas: HTMLCanvasElement): SolarScene {
     }));
     plane.add(orbit);
 
-    // 定位组 → 自转组 → 球。倾角作用在自转组上，不作用在定位组上
+    // 定位组 → 自转轴组（承担倾角，**固定不动**）→ 自转组（绕自身轴转）→ 球体/光环
+    //
+    // 倾角必须挂在自转**之外**那一层：转轴方向是固定的，转的是行星本身。
+    // 若把两者合进同一个 group（rotation.z = 倾角、rotation.y = 自转角），
+    // three 的 Euler 默认 XYZ 序会合成 R = Rx·Ry·Rz，倾角那一项被自转角带偏——
+    // 实算下来自转轴每圈摆动近 60°，光环跟着一起「转」，土星看着像在乱晃。
     const pivot = new THREE.Group();
     plane.add(pivot);
 
-    const spin = new THREE.Group();
-    spin.rotation.z = b.tiltDeg * DEG;
-    pivot.add(spin);
+    const axis = new THREE.Group();
+    axis.rotation.z = b.tiltDeg * DEG;
+    pivot.add(axis);
+
+    const spinner = new THREE.Group();
+    axis.add(spinner);
 
     const mesh = new THREE.Mesh(
       new THREE.SphereGeometry(r, 40, 28),
@@ -168,7 +176,7 @@ export function createSolarScene(canvas: HTMLCanvasElement): SolarScene {
         emissive: new THREE.Color(b.color).multiplyScalar(0.10),
       }),
     );
-    spin.add(mesh);
+    spinner.add(mesh);
 
     if (b.ring) {
       const rg = new THREE.RingGeometry(r * b.ring.inner, r * b.ring.outer, 96);
@@ -178,10 +186,10 @@ export function createSolarScene(canvas: HTMLCanvasElement): SolarScene {
         color: b.ring.color, transparent: true, opacity: b.ring.opacity,
         side: THREE.DoubleSide, depthWrite: false,
       }));
-      spin.add(rm);
+      spinner.add(rm);
     }
 
-    entries.push({ def: b, pivot, spin, mesh, orbit });
+    entries.push({ def: b, pivot, spinner, mesh, orbit });
   }
 
   /* ---------- 位置更新 ---------- */
@@ -191,8 +199,9 @@ export function createSolarScene(canvas: HTMLCanvasElement): SolarScene {
       const lon = meanLongitude(e.def, days) * DEG;
       const d = orbitRadius(e.def.aAU);
       e.pivot.position.set(d * Math.cos(lon), 0, -d * Math.sin(lon));
-      // 自转：真实自转周期，符号即转向（金星、天王星为逆向）
-      e.spin.rotation.y = (days * 24 / e.def.rotHours) * Math.PI * 2;
+      // 自转：真实自转周期，符号即转向（金星、天王星为逆向）；
+      // 转的是 spinner，上面那层 axis 的倾角固定不动
+      e.spinner.rotation.y = (days * 24 / e.def.rotHours) * Math.PI * 2;
     }
     sunMesh.rotation.y = (days * 24 / SUN.rotHours) * Math.PI * 2;
   }
