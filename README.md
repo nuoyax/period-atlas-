@@ -138,7 +138,3 @@ runtime**; build, preview and checks are all independent of the directory name.
 
 Active windows and peaks are **population-level common ranges**, meant to illustrate rhythm
 shapes. They are not medical advice.
-
-## Author
-
-2862440280@qq.com
