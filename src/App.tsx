@@ -3,6 +3,7 @@ import { Controls } from './components/Controls.tsx';
 import { BandBar } from './components/BandBar.tsx';
 import { WaveView } from './components/WaveView.tsx';
 import { RingView } from './components/RingView.tsx';
+import { OrbitView } from './components/orbit/OrbitView.tsx';
 import { TableView } from './components/TableView.tsx';
 import { FootNote } from './components/FootNote.tsx';
 import { ClockDriver, clock, poke } from './model/clock.ts';
@@ -85,6 +86,10 @@ export default function App() {
       {view === 'wave' && <WaveView ind={ind} levels={levels} />}
 
       {view === 'ring' && ringOk && <RingView ind={ind} />}
+
+      {view === 'solar' && (
+        <OrbitView onSync2D={() => { setView('wave'); setPlaying(false); }} />
+      )}
 
       {table && <TableView ind={ind} levels={levels} />}
 

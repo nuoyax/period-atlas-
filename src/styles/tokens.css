@@ -269,6 +269,86 @@
   .tname .dot{width:9px;height:9px;border-radius:50%;flex:none}
   tbody tr:last-child td{border-bottom:0}
 
+  /* ---------- 太阳系 3D ---------- */
+  /* 场景是深色的（星空），与页面浅色主题相对；太阳系卡片自带深色底，不跟随主题，
+     因为「星星在浅色背景上」在视觉上说不通。 */
+  .solar-card{--solar-bg:#06070c;--solar-sun:#ffcc55}
+  .solar-bar{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin:0 0 10px}
+  .solar-date{
+    font-size:13px;font-weight:600;color:var(--ink);
+    font-variant-numeric:tabular-nums;
+  }
+  .solar-stage{
+    position:relative;width:100%;height:min(58vh,560px);min-height:340px;
+    border-radius:12px;overflow:hidden;border:1px solid var(--border);
+    background:var(--solar-bg);
+  }
+  canvas.solar-canvas{display:block;width:100%;height:100%;cursor:grab}
+  canvas.solar-canvas:active{cursor:grabbing}
+  /* 天体名称标签：HTML 定位，锚点在左下（向右上偏出天体本体，不遮住它） */
+  .solar-label{
+    position:absolute;left:0;top:0;
+    transform:translate(-50%,-50%);
+    display:flex;align-items:center;gap:5px;
+    padding:2px 6px 2px 5px;border-radius:999px;
+    background:rgba(6,7,12,.62);border:1px solid rgba(255,255,255,.14);
+    color:#f2f4f8;font:inherit;font-size:11.5px;line-height:1;
+    cursor:pointer;white-space:nowrap;
+    margin:14px 0 0 0;                    /* 略微抬起，避免压住天体 */
+    backdrop-filter:blur(2px);
+  }
+  .solar-label:hover{border-color:rgba(255,255,255,.4)}
+  .solar-label[data-active="true"]{
+    border-color:#fff;background:rgba(6,7,12,.86);font-weight:600;
+  }
+  .sl-dot{width:8px;height:8px;border-radius:50%;flex:none;background:var(--c,currentColor)}
+  .solar-legend{display:flex;gap:6px;flex-wrap:wrap;margin:10px 0 0}
+  .sl-chip{
+    appearance:none;display:flex;align-items:center;gap:6px;
+    background:var(--surface-1);color:var(--ink-2);
+    border:1px solid var(--border);border-radius:999px;
+    padding:4px 10px;font:inherit;font-size:12px;cursor:pointer;
+  }
+  .sl-chip:hover{border-color:var(--axis);color:var(--ink)}
+  .sl-chip[aria-pressed="true"]{color:var(--ink);border-color:var(--axis);font-weight:600}
+  .solar-note{
+    margin:10px 0 0;font-size:12px;color:var(--muted);line-height:1.6;
+  }
+
+  /* ---------- 天体预览面板 ---------- */
+  .body-preview{
+    margin-top:14px;padding:14px 16px 16px;
+    border:1px solid var(--border);border-radius:12px;
+    background:var(--surface-1);
+  }
+  .bp-head{display:flex;align-items:center;gap:9px;margin-bottom:6px}
+  .bp-head h3{margin:0;font-size:15px;font-weight:640}
+  .bp-dot{width:11px;height:11px;border-radius:50%;flex:none}
+  .bp-x{
+    margin-left:auto;appearance:none;background:transparent;border:0;
+    color:var(--muted);font:inherit;font-size:19px;line-height:1;
+    cursor:pointer;padding:3px 6px;border-radius:7px;
+  }
+  .bp-x:hover{background:var(--surface-2);color:var(--ink)}
+  .body-preview{display:grid;grid-template-columns:260px 1fr;gap:6px 20px;align-items:start}
+  .bp-head{grid-column:1 / -1}
+  .bp-rows{grid-column:2;grid-row:2;margin:0}
+  .bp-note,.bp-caveat{grid-column:2}
+  svg.miniorbit{display:block;width:260px;max-width:100%;height:auto;
+    grid-column:1;grid-row:2 / span 3;align-self:start}
+  .mo-cap{font:600 11px system-ui,sans-serif;fill:var(--muted)}
+  .bp-rows .bp-row{display:flex;gap:12px;padding:6px 0;border-bottom:1px solid var(--border)}
+  .bp-rows .bp-row:last-child{border-bottom:0}
+  .bp-rows dt{color:var(--muted);font-size:12px;flex:0 0 auto;min-width:126px;margin:0}
+  .bp-rows dd{margin:0;font-size:12.5px;color:var(--ink);font-variant-numeric:tabular-nums}
+  .bp-note{margin:10px 0 0;font-size:12.5px;color:var(--ink-2);line-height:1.6}
+  .bp-caveat{margin:6px 0 0;font-size:11.5px;color:var(--muted);line-height:1.6}
+  .bp-sync{grid-column:2;margin-top:12px;justify-self:start}
+  @media (max-width:760px){
+    .body-preview{grid-template-columns:1fr}
+    .bp-rows,.bp-note,.bp-caveat,.bp-sync,svg.miniorbit{grid-column:1;grid-row:auto}
+  }
+
   footer{margin-top:26px;color:var(--muted);font-size:12px;line-height:1.7}
   footer code{font-size:11.5px}
   .sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
